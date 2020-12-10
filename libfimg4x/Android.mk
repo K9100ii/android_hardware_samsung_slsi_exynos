@@ -20,7 +20,7 @@ include $(CLEAR_VARS)
 ifeq ($(BOARD_USES_SKIA_FIMGAPI),true)
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_SRC_FILES:= \
+LOCAL_SRC_FILES := \
 	FimgApi.cpp   \
 	FimgExynos5.cpp
 
@@ -31,9 +31,11 @@ LOCAL_C_INCLUDES += \
 
 LOCAL_HEADER_LIBRARIES += generated_kernel_headers
 
-LOCAL_SHARED_LIBRARIES:= liblog libutils libbinder
+LOCAL_SHARED_LIBRARIES := liblog libutils libbinder
 
-LOCAL_MODULE:= libfimg
+LOCAL_MODULE := libfimg
+
+LOCAL_VENDOR_MODULE := true
 
 LOCAL_PRELINK_MODULE := false
 

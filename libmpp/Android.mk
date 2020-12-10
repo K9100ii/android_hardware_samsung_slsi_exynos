@@ -30,6 +30,7 @@ LOCAL_HEADER_LIBRARIES += generated_kernel_headers
 
 LOCAL_SRC_FILES := MppFactory.cpp
 LOCAL_MODULE := libmpp
+LOCAL_VENDOR_MODULE := true
 
 ifeq ($(BOARD_USES_FIMC), true)
 LOCAL_SHARED_LIBRARIES += libexynosfimc
