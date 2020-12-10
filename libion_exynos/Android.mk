@@ -24,5 +24,7 @@ LOCAL_MODULE := libion_exynos
 
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_VENDOR_MODULE := true
+
 include $(TOP)/hardware/samsung_slsi/exynos/BoardConfigCFlags.mk
 include $(BUILD_SHARED_LIBRARY)
