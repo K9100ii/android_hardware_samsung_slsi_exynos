@@ -19,7 +19,6 @@ LOCAL_PRELINK_MODULE := false
 LOCAL_SHARED_LIBRARIES := liblog libutils libcutils libexynosutils \
 	libexynosv4l2 libsync
 
-
 LOCAL_CFLAGS += -DHLOG_CODE=1
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../include \
@@ -28,14 +27,12 @@ LOCAL_C_INCLUDES := \
 	$(TOP)/hardware/samsung_slsi/exynos/libexynosutils \
 	$(TOP)/hardware/samsung_slsi/$(TARGET_SOC)/libhwcmodule
 
-
-
+LOCAL_HEADER_LIBRARIES += generated_kernel_headers
 
 LOCAL_SRC_FILES := \
 	ExynosDisplay.cpp \
 	ExynosOverlayDisplay.cpp \
 	ExynosPrimaryDisplay.cpp
-
 
 LOCAL_MODULE := libdisplay
 

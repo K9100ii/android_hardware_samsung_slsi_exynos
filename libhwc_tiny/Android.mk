@@ -34,9 +34,10 @@ LOCAL_C_INCLUDES += \
 	$(LOCAL_PATH)/../include \
 	$(TOP)/hardware/samsung_slsi/exynos/libexynosutils
 
-
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../libvppdisplay_tiny
 LOCAL_SRC_FILES := ExynosHWC.cpp
+
+LOCAL_HEADER_LIBRARIES += generated_kernel_headers
 
 LOCAL_MODULE := hwcomposer.exynos5
 LOCAL_MODULE_TAGS := optional

@@ -30,7 +30,6 @@ ifeq ($(BOARD_USES_FB_PHY_LINEAR),true)
 endif
 
 LOCAL_C_INCLUDES := \
-	$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include \
 	$(TOP)/hardware/samsung_slsi/$(TARGET_SOC)/include \
 	$(TOP)/hardware/samsung_slsi/$(TARGET_BOARD_PLATFORM)/include \
 	$(LOCAL_PATH)/../include \
@@ -42,8 +41,7 @@ LOCAL_C_INCLUDES := \
 	$(TOP)/hardware/samsung_slsi/$(TARGET_SOC)/libhwcutilsmodule \
 	$(TOP)/hardware/samsung_slsi/$(TARGET_SOC)/libdisplaymodule
 
-LOCAL_ADDITIONAL_DEPENDENCIES += \
-	$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr
+LOCAL_HEADER_LIBRARIES += generated_kernel_headers
 
 ifeq ($(BOARD_HDMI_INCAPABLE), true)
 	LOCAL_C_INCLUDES += $(LOCAL_PATH)/../libhdmi_dummy
