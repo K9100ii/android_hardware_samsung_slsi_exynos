@@ -972,7 +972,7 @@ bool ExynosDisplay::isOverlaySupported(hwc_layer_1_t &layer, size_t index, bool 
 #ifdef USE_DRM_BURST_LEN
         if (handle && (getDrmMode(handle->flags) != NO_DRM)) {
             if (visible_width < DRM_BURSTLEN_BYTES) {
-                DISPLAY_LOGD(eDebugOverlaySupported, "\tlayer %u: visible area is too narrow", index);
+                DISPLAY_LOGD(eDebugOverlaySupported, "\tlayer %zu: visible area is too narrow", index);
                 mLayerInfos[index]->mCheckOverlayFlag |= eUnsupportedDstWidth;
                 return false;
             }
@@ -1599,7 +1599,7 @@ int ExynosDisplay::handleWindowUpdate(hwc_display_contents_1_t __unused *content
                 }
 
                 if ((currentRect.left > currentRect.right) || (currentRect.top > currentRect.bottom)) {
-                    DISPLAY_LOGD(eDebugWindowUpdate, "[WIN_UPDATE] window(%zu) layer(%i) invalid region (%4d, %4d) - (%4d, %4d)",
+                    DISPLAY_LOGD(eDebugWindowUpdate, "[WIN_UPDATE] window(%zu) layer(%d) invalid region (%4d, %4d) - (%4d, %4d)",
                         i, layerIdx, currentRect.left, currentRect.top, currentRect.right, currentRect.bottom);
                     return -eWindowUpdateInvalidRegion;
                 }
@@ -1717,7 +1717,7 @@ int ExynosDisplay::handleWindowUpdate(hwc_display_contents_1_t __unused *content
 #ifdef USE_DRM_BURST_LEN
                     if (mHasDrmSurface) {
                         if ((size_t)((intersectionWidth * bitsPerPixel) / 8) < DRM_BURSTLEN_BYTES) {
-                            DISPLAY_LOGD(eDebugWindowUpdate, "[WIN_UPDATE] win[%d] insufficient burst length (%d)*(%d) < %d", windowIndex, intersectionWidth, bitsPerPixel, BURSTLEN_BYTES);
+                            DISPLAY_LOGD(eDebugWindowUpdate, "[WIN_UPDATE] win[%d] insufficient burst length (%d)*(%d) < %zd", windowIndex, intersectionWidth, bitsPerPixel, BURSTLEN_BYTES);
                             burstLengthCheckDone = false;
                             break;
 
@@ -2720,7 +2720,7 @@ void ExynosDisplay::determineBandwidthSupport(hwc_display_contents_1_t *contents
                         !isProcessingRequired(layer) |
                         (directFbNum >= mInternalDMAs.size() && !(mUseSecureDMA && isTopLayer)),
                         &supportedInternalMPP, &supportedExternalMPP)) {
-                DISPLAY_LOGD(eDebugResourceAssigning, "layer(%zu) is OVERLAY ",i);
+                DISPLAY_LOGD(eDebugResourceAssigning, "layer(%zu) is OVERLAY ", i);
                 if (supportedInternalMPP != NULL) {
                     DISPLAY_LOGD(eDebugResourceAssigning, "layer(%zu) is OVERLAY internalMPP(%d, %d)", i, supportedInternalMPP->mType, supportedInternalMPP->mIndex);
                     supportedInternalMPP->mState = MPP_STATE_ASSIGNED;
