@@ -85,26 +85,34 @@ struct private_handle_t {
     int     fd1;
     int     fd2;
     // ints
-    int     magic;
-    int     flags;
-    int     size;
-    int     offset;
+    int     magic; // 18
+    int     flags; // 1c
+    int     size; // 20
+    int     size1; // 24
+    int     size2; // 28
 
-    int     format;
-    int     width;
-    int     height;
-    int     stride;
-    int     vstride;
-    int     frameworkFormat;
+    int     offset; // 2c
+    int     format; // 30
+    int     __unknown2; // 34
+    int     internal_format; // 38
 
-    ion_user_handle_t handle;
-    ion_user_handle_t handle1;
-    ion_user_handle_t handle2;
+    int     format_top_bit; // 3c
+
+    int     frameworkFormat; // 40
+    int     width; // 44
+    int     height; // 48
+    int     stride; // 4c
+    int     vstride; // 50
+    int     is_compressible; // 54
 
     // FIXME: the attributes below should be out-of-line
-    uint64_t base __attribute__((aligned(8)));
-    uint64_t base1 __attribute__((aligned(8)));
-    uint64_t base2 __attribute__((aligned(8)));
+    int __unknown3; // 58
+    int __unknown4; // 5c
+    int __unknown5; // 60
+    /* not sure about these three */
+    int __unknown6; // 64
+    int compressed_out; // 68
+    int prefer_compression; // 6c
 
 #ifdef __cplusplus
     static inline int sNumInts() {
@@ -115,11 +123,8 @@ struct private_handle_t {
 
     private_handle_t(int fd, int size, int flags) :
         fd(fd), fd1(-1), fd2(-1), magic(sMagic), flags(flags), size(size),
-        offset(0), format(0), width(0), height(0), stride(0), vstride(0), frameworkFormat(0),
-        handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0), 
-        dssRatio(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE),
-        internal_format(0), is_compressible(0), compressed_out(0)
-
+        offset(0), format(0), internal_format(0), frameworkFormat(0), width(0), height(0), stride(0),
+        vstride(0), is_compressible(0), compressed_out(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE), dssRatio(0), handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0)
     {
         version = sizeof(native_handle);
         numInts = sNumInts() + 2;
@@ -129,11 +134,8 @@ struct private_handle_t {
     private_handle_t(int fd, int size, int flags, int w,
                     int h, int format, uint64_t internal_format, int frameworkFormat, int stride, int vstride, int is_compressible) :
         fd(fd), fd1(-1), fd2(-1), magic(sMagic), flags(flags), size(size),
-        offset(0), format(format), width(w), height(h), stride(stride), vstride(vstride), frameworkFormat(frameworkFormat),
-        handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0), 
-        dssRatio(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE),
-        internal_format(internal_format), is_compressible(is_compressible), compressed_out(0)
-
+        offset(0), format(format), internal_format(internal_format), frameworkFormat(frameworkFormat), width(w), height(h), stride(stride),
+        vstride(vstride), is_compressible(is_compressible), compressed_out(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE), dssRatio(0), handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0)
     {
         version = sizeof(native_handle);
         numInts = sNumInts() + 2;
@@ -143,11 +145,8 @@ struct private_handle_t {
     private_handle_t(int fd, int fd1, int size, int flags, int w,
                     int h, int format, uint64_t internal_format, int frameworkFormat, int stride, int vstride, int is_compressible) :
         fd(fd), fd1(fd1), fd2(-1), magic(sMagic), flags(flags), size(size),
-        offset(0), format(format), width(w), height(h), stride(stride), vstride(vstride), frameworkFormat(frameworkFormat),
-        handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0), 
-        dssRatio(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE),
-        internal_format(internal_format), is_compressible(is_compressible), compressed_out(0)
-
+        offset(0), format(format), internal_format(internal_format), frameworkFormat(frameworkFormat), width(w), height(h), stride(stride),
+        vstride(vstride), is_compressible(is_compressible), compressed_out(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE), dssRatio(0), handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0)
     {
         version = sizeof(native_handle);
         numInts = sNumInts() + 1;
@@ -157,11 +156,8 @@ struct private_handle_t {
     private_handle_t(int fd, int fd1, int fd2, int size, int flags, int w,
                     int h, int format, uint64_t internal_format, int frameworkFormat, int stride, int vstride, int is_compressible) :
         fd(fd), fd1(fd1), fd2(fd2), magic(sMagic), flags(flags), size(size),
-        offset(0), format(format), width(w), height(h), stride(stride), vstride(vstride), frameworkFormat(frameworkFormat),
-        handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0), 
-        dssRatio(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE),
-        internal_format(internal_format), is_compressible(is_compressible), compressed_out(0)
-
+        offset(0), format(format), internal_format(internal_format), frameworkFormat(frameworkFormat), width(w), height(h), stride(stride),
+        vstride(vstride), is_compressible(is_compressible), compressed_out(0), prefer_compression(PREFER_COMPRESSION_NO_CHANGE), dssRatio(0), handle(0), handle1(0), handle2(0), base(0), base1(0), base2(0)
     {
         version = sizeof(native_handle);
         numInts = sNumInts();
@@ -191,21 +187,19 @@ struct private_handle_t {
         return NULL;
     }
 
-    int     lock_usage;
-    int     lock_offset;
-    int     lock_len;
+    /* not sure about these four */
+    int     lock_usage; // 70
+    int     lock_offset; // 74
+    int     lock_len; // 78
+    int     dssRatio; // 7c
 
-    int     dssRatio;
-    int     cropLeft;
-    int     cropTop;
-    int     cropRight;
-    int     cropBottom;
-
-    int          prefer_compression;
-    uint64_t     internal_format;
-    int          is_compressible;
-    int          compressed_out;
-
+    ion_user_handle_t handle; // 80
+    ion_user_handle_t handle1; // 84
+    ion_user_handle_t handle2; // 88
+/* 8c padding */
+    uint64_t base __attribute__((aligned(8))); // 90
+    uint64_t base1 __attribute__((aligned(8))); // 98
+    uint64_t base2 __attribute__((aligned(8))); // a0
 #endif
 };
 
