@@ -430,7 +430,7 @@ int gralloc_unlock(gralloc_module_t const* module,
 }
 
 int gralloc_lock_ycbcr(gralloc_module_t const* module __unused,
-                        buffer_handle_t handle, int usage,
+                        buffer_handle_t handle, int usage __unused,
                         int l __unused, int t __unused, int w __unused, int h __unused,
                         android_ycbcr *ycbcr)
 {
@@ -483,11 +483,6 @@ int gralloc_lock_ycbcr(gralloc_module_t const* module __unused,
 
     // Zero out reserved fields
     memset(ycbcr->reserved, 0, sizeof(ycbcr->reserved));
-
-    ALOGD("gralloc_lock_ycbcr success. format : %x, usage: %x, ycbcr.y: %p, .cb: %p, .cr: %p, "
-            ".ystride: %zu, .cstride: %zu, .chroma_step: %zu", hnd->format, usage,
-            ycbcr->y, ycbcr->cb, ycbcr->cr, ycbcr->ystride, ycbcr->cstride,
-            ycbcr->chroma_step);
 
     return 0;
 }
