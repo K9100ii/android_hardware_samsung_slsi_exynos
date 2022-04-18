@@ -270,7 +270,7 @@ bool CScalerV4L2::DevSetFormat(FrameInfo &frm)
 #ifdef SCALER_USE_PREMUL_FMT
         fmt.fmt.pix_mp.flags = V4L2_PIX_FMT_FLAG_PREMUL_ALPHA;
 #else
-        fmt.fmt.pix_mp.reserved[SC_V4L2_FMT_PREMULTI_FLAG] = 1;
+        fmt.fmt.pix_mp.reserved[1] = SC_V4L2_FMT_PREMULTI_FLAG;
 #endif
     }
 

@@ -37,8 +37,12 @@ LOCAL_CFLAGS += -DSCALER_USE_LOCAL_CID
 LOCAL_CFLAGS += -DSCALER_USE_PREMUL_FMT
 endif
 
+LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := libexynosscaler
 LOCAL_VENDOR_MODULE := true
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
+LOCAL_LICENSE_CONDITIONS := notice
+LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 
 include $(TOP)/hardware/samsung_slsi/exynos/BoardConfigCFlags.mk
 include $(BUILD_SHARED_LIBRARY)

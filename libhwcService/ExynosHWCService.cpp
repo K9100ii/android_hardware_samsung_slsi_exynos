@@ -448,9 +448,15 @@ void ExynosHWCService::setHWCCtl(int ctrl, int val)
     }
 }
 
+void ExynosHWCService::setPSRExitCallback(void (*callback)(exynos5_hwc_composer_device_1_t *))
+{
+    ALOGD_IF(HWC_SERVICE_DEBUG, "%s, callback %p", __func__, callback);
+    doPSRExit = callback;
+}
+
 void ExynosHWCService::notifyPSRExit()
 {
-    ALOGD_IF(HWC_SERVICE_DEBUG, "%s", __func__);
+    ALOGD_IF(HWC_SERVICE_DEBUG, "%s, doPSRExit %p", __func__, doPSRExit);
     if (doPSRExit != NULL)
         doPSRExit(mHWCCtx);
 }
@@ -492,7 +498,7 @@ ExynosHWCService *ExynosHWCService::getExynosHWCService()
 
 void ExynosHWCService::setExynosHWCCtx(ExynosHWCCtx *HWCCtx)
 {
-    ALOGD_IF(HWC_SERVICE_DEBUG, "HWCCtx=0x%tx", (ptrdiff_t)HWCCtx);
+    ALOGD_IF(HWC_SERVICE_DEBUG, "HWCCtx=0x%td", (ptrdiff_t)HWCCtx);
     if(HWCCtx) {
         mHWCCtx = HWCCtx;
     }
@@ -500,17 +506,14 @@ void ExynosHWCService::setExynosHWCCtx(ExynosHWCCtx *HWCCtx)
 
 void ExynosHWCService::setBootFinishedCallback(void (*callback)(exynos5_hwc_composer_device_1_t *))
 {
+    ALOGD_IF(HWC_SERVICE_DEBUG, "%s, callback %p", __func__, callback);
     bootFinishedCallback = callback;
 }
 
-void ExynosHWCService::setPSRExitCallback(void (*callback)(exynos5_hwc_composer_device_1_t *))
-{
-    doPSRExit = callback;
-}
-
 void ExynosHWCService::setBootFinished() {
+    ALOGD_IF(HWC_SERVICE_DEBUG, "%s", __func__);
     if (bootFinishedCallback != NULL)
         bootFinishedCallback(mHWCCtx);
 }
 
-}
+} // namespace android

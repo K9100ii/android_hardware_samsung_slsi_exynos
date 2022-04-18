@@ -146,9 +146,9 @@ void exynos_gsc_destroy(void *handle)
 
     if (gsc->mode == GSC_OUTPUT_MODE)
         gsc->m_gsc_out_destroy(gsc);
-    else if (gsc->mode ==GSC_CAPTURE_MODE)
+    else if (gsc->mode == GSC_CAPTURE_MODE)
         gsc->m_gsc_cap_destroy(gsc);
-    else
+    else if (gsc->mode == GSC_M2M_MODE)
         gsc->m_gsc_m2m_destroy(gsc);
 
     delete(gsc);
@@ -170,6 +170,13 @@ int exynos_gsc_set_csc_property(
         return -1;
     }
 
+    if (gsc->gsc_id >= HW_SCAL0) {
+        int ret;
+        ret = exynos_sc_csc_exclusive(gsc->scaler,
+                            range_full, v4l2_colorspace);
+        Exynos_gsc_Out();
+        return ret;
+    }
     gsc->eq_auto = eq_auto;
     gsc->range_full = range_full;
     gsc->v4l2_colorspace = v4l2_colorspace;
@@ -576,7 +583,7 @@ int exynos_gsc_stop_exclusive(void *handle)
     case GSC_OUTPUT_MODE:
         ret = gsc->m_gsc_out_stop(handle);
         break;
-    case  GSC_CAPTURE_MODE:
+    case GSC_CAPTURE_MODE:
         ret = gsc->m_gsc_cap_stop(handle);
         break;
     default:

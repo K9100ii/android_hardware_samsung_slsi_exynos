@@ -21,7 +21,11 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_RELATIVE_PATH := hw
 LOCAL_C_INCLUDES += hardware/libhardware/include
 LOCAL_SHARED_LIBRARIES := liblog
-LOCAL_SRC_FILES := memtrack_exynos.c mali.c ion.c
+LOCAL_SRC_FILES := memtrack_exynos.cpp mali.cpp ion.cpp
 LOCAL_MODULE := memtrack.$(TARGET_BOARD_PLATFORM)
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
+LOCAL_LICENSE_CONDITIONS := notice
+LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_VENDOR_MODULE := true
+
 include $(BUILD_SHARED_LIBRARY)

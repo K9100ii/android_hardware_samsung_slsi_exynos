@@ -713,12 +713,15 @@ size_t ExynosJpegEncoderForCamera::CompressThumbnailOnly(size_t limit, int quali
     unsigned int num_buffers = 1;
     switch (v4l2Format) {
         case V4L2_PIX_FMT_YUV420M:
+            [[fallthrough]];
         case V4L2_PIX_FMT_YVU420M:
             num_buffers++;
             [[fallthrough]];
         case V4L2_PIX_FMT_NV12M:
+            [[fallthrough]];
         case V4L2_PIX_FMT_NV21M:
             num_buffers++;
+            break;
     }
 
     if (src_buftype == JPEG_BUF_TYPE_USER_PTR) {
@@ -746,7 +749,7 @@ size_t ExynosJpegEncoderForCamera::CompressThumbnailOnly(size_t limit, int quali
     // not exceed the maximum length of a segment, 64KB minus the length of Exif
     // metadata. If the stream length is too large, repeat the compression until
     // the length become proper to embed.
-    while (quality >= 20) {
+    do {
         if (!m_phwjpeg4thumb->SetQuality(quality)) {
             ALOGE("Failed to configure thumbnail quality factor %u", quality);
             return 0;
@@ -767,7 +770,7 @@ size_t ExynosJpegEncoderForCamera::CompressThumbnailOnly(size_t limit, int quali
         } else {
             return thumbsize;
         }
-    }
+    } while (quality >= 20);
 
     ALOG_ASSERT(false, "It should never reach here");
     ALOGE("Thumbnail compression finally failed");

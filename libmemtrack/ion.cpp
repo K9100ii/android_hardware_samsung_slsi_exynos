@@ -19,7 +19,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include <hardware/memtrack.h>
 
@@ -40,7 +40,7 @@ static struct memtrack_record ion_record_templates[] = {
     },
 };
 
-int ion_memtrack_get_memory(pid_t pid, enum memtrack_type __unused type,
+int ion_memtrack_get_memory(pid_t pid, int __unused type,
                              struct memtrack_record *records,
                              size_t *num_records)
 {

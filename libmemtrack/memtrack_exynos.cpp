@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include <log/log.h>
+#include <cstring>
+#include <cerrno>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <hardware/memtrack.h>
 
@@ -34,47 +35,24 @@ int exynos_memtrack_get_memory(const struct memtrack_module __unused *module,
                                 struct memtrack_record *records,
                                 size_t *num_records)
 {
-    if (type == MEMTRACK_TYPE_GL) {
-        return mali_memtrack_get_memory(pid, type, records, num_records);
-    } else if (type == MEMTRACK_TYPE_GRAPHICS) {
-        return ion_memtrack_get_memory(pid, type, records, num_records);
+    struct stat st;
+
+    switch (type) {
+        case MEMTRACK_TYPE_GL:
+            if (!stat("/d/mali/mem", &st) && S_ISDIR(st.st_mode))
+                return mali_memtrack_get_memory(pid, type, records, num_records);
+            break;
+        case MEMTRACK_TYPE_GRAPHICS:
+            if (!stat("/d/ion/clients", &st) && S_ISDIR(st.st_mode))
+                return ion_memtrack_get_memory(pid, type, records, num_records);
+            break;
     }
 
-    return -EINVAL;
-}
-
-static int memtrack_open(__attribute__((unused)) const hw_module_t* module, const char* name,
-                    hw_device_t** device)
-{
-    ALOGD("%s: enter; name=%s", __FUNCTION__, name);
-    int retval = 0; /* 0 is ok; -1 is error */
-
-    if (strcmp(name, "memtrack") == 0) {
-        struct memtrack_module *dev = (struct memtrack_module *)calloc(1,
-                sizeof(struct memtrack_module));
-
-        if (dev) {
-            /* Common hw_device_t fields */
-            dev->common.tag = HARDWARE_DEVICE_TAG;
-            dev->common.module_api_version = MEMTRACK_MODULE_API_VERSION_0_1;
-            dev->common.hal_api_version = HARDWARE_HAL_API_VERSION;
-
-            dev->init = exynos_memtrack_init;
-            dev->getMemory = exynos_memtrack_get_memory;
-
-            *device = (hw_device_t*)dev;
-        } else
-            retval = -ENOMEM;
-    } else {
-        retval = -EINVAL;
-    }
-
-    ALOGD("%s: exit %d", __FUNCTION__, retval);
-    return retval;
+    return -ENODEV;
 }
 
 static struct hw_module_methods_t memtrack_module_methods = {
-    .open = memtrack_open,
+    .open = NULL,
 };
 
 struct memtrack_module HAL_MODULE_INFO_SYM = {

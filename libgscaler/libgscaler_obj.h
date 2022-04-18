@@ -14,8 +14,8 @@
  * limitations under the License.
 */
 
-#ifndef LIBGSCALER_OBJ_H_ 
-#define LIBGSCALER_OBJ_H_ 
+#ifndef LIBGSCALER_OBJ_H_
+#define LIBGSCALER_OBJ_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +23,7 @@ extern "C" {
 
 //#define LOG_NDEBUG 0
 #define LOG_TAG "libexynosgscaler"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include <sys/types.h>
 #include <sys/ioctl.h>

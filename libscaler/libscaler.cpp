@@ -33,6 +33,7 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <system/graphics.h>
 
 #include "exynos_scaler.h"
@@ -181,7 +182,6 @@ int exynos_sc_set_csc_property(
         unsigned int csc_range,
         unsigned int v4l2_colorspace __unused,
         unsigned int filter)
-
 {
     CScalerNonStream *sc = GetNonStreamScaler(handle);
     if (!sc)

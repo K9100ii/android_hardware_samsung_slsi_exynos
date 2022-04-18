@@ -32,6 +32,7 @@
 #include <stdarg.h>
 #include <fcntl.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -135,7 +136,8 @@ int exynos_v4l2_open_devname(const char *devname, int oflag, ...)
             }
             stream_fd = fopen(filename, "r");
             if (stream_fd == NULL) {
-                ALOGE("failed to open sysfs entry for videodev");
+                ALOGE("failed to open sysfs entry for videodev (%d - %s)", errno, strerror(errno));
+                i++;
                 continue;   /* try next */
             }
 

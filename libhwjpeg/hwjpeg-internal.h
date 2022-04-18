@@ -25,7 +25,10 @@
 #include <cerrno>
 #include <cstring>
 
-#include <cutils/log.h>
+#include <unistd.h>
+#include <log/log.h>
+#include <time.h>
+#include <sys/ioctl.h>
 
 #ifdef __GNUC__
 #  define __UNUSED__ __attribute__((__unused__))

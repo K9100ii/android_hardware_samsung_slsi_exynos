@@ -83,7 +83,7 @@ void CJpegStreamParser::Initialize()
 
 size_t CJpegStreamParser::GetLength(unsigned char *addr)
 {
-    size_t len = *addr++ * 0x100;
+    size_t len = static_cast<size_t>(*addr++) * 0x100;
     return len + *addr;
 }
 
@@ -232,7 +232,7 @@ class CLibhwjpegDecompressor: public hwjpeg_decompressor_struct {
 
     CJpegStreamParser m_jpegStreamParser;
 public:
-    CLibhwjpegDecompressor() {
+    CLibhwjpegDecompressor() : m_flags(0) {
         // members of hwjpeg_decompressor_struct
         image_width = 0;
         image_height = 0;
@@ -243,6 +243,7 @@ public:
         output_width = 0;
         output_height = 0;
         m_bPrepared = false;
+        m_pStreamBuffer = NULL;
 
         output_format = V4L2_PIX_FMT_RGB32;
 

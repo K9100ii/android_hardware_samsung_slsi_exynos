@@ -19,7 +19,7 @@
 
 #include <utils/Errors.h>
 #include <sys/types.h>
-#include <cutils/log.h>
+#include <log/log.h>
 #include <binder/IServiceManager.h>
 #include <utils/Singleton.h>
 #include <utils/StrongPointer.h>

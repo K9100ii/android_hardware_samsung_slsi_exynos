@@ -29,7 +29,7 @@
 #define _LIBSCALER_COMMON_H_
 
 #define LOG_TAG "libexynosscaler"
-#include <cutils/log.h>
+#include <log/log.h>
 #include <cerrno>
 #include <cstring>
 
@@ -77,9 +77,9 @@ static inline T min (T a, T b) {
 
 template <typename T>
 static inline void swap(T &a, T &b) {
-    T __unused t = a;
+    T t = a;
     a = b;
-    b = a;
+    b = t;
 }
 
 static inline bool UnderOne16thScaling(unsigned int srcw, unsigned int srch,

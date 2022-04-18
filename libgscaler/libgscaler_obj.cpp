@@ -1569,9 +1569,9 @@ int CGscaler::m_gsc_cap_config(void *handle,
             return -1;
     }
 
+    fmt.type  = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
     if (!gsc->dst_info.stream_on) {
         /* set src format: GSC video dev*/
-        fmt.type  = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
 	fmt.fmt.pix_mp.width            = gsc->dst_img.fw;
 	fmt.fmt.pix_mp.height           = gsc->dst_img.fh;
 	fmt.fmt.pix_mp.pixelformat    = dst_color_space;

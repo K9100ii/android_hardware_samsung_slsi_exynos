@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/mman.h>
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include <hardware/memtrack.h>
 
@@ -59,14 +59,14 @@ static void scan_directory_for_filenames(pid_t pid)
     /* As per ARM, there can be multiple files */
     DIR *directory;
     struct dirent *entries;
-    char pid_string[8] = {0};
+    char pid_string[12] = {0};
     int pid_index = 0;
 
     /* Open directory. */
     directory = opendir(MALI_DEBUG_FS_PATH);
 
     sprintf(pid_string, "%d", pid);
-    for (pid_index = 0; pid_index < 8; pid_index++) {
+    for (pid_index = 0; pid_index < 12; pid_index++) {
         if (pid_string[pid_index] == 0) {
             pid_string[pid_index] = '_';
             break;
@@ -97,14 +97,14 @@ static void scan_directory_for_filenames(pid_t pid)
     return;
 }
 
-int mali_memtrack_get_memory(pid_t pid, enum memtrack_type __unused type,
+int mali_memtrack_get_memory(pid_t pid, int __unused type,
                              struct memtrack_record *records,
                              size_t *num_records)
 {
     size_t allocated_records = min(*num_records, ARRAY_SIZE(record_templates));
     FILE *fp;
     int local_count;
-    unsigned int temp_val = 0, total_memory_size = 0, native_buf_mem_size = 0;
+    long long int temp_val = 0, total_memory_size = 0, native_buf_mem_size = 0;
     bool native_buffer_read = false;
     char line[1024] = {0};
 
@@ -161,7 +161,7 @@ int mali_memtrack_get_memory(pid_t pid, enum memtrack_type __unused type,
                  * Channel: Native Buffer (Total memory: 44285952)
                  *
                  */
-                ret = sscanf(line, "%*s %15s %15s %*s %*s %d \n", memory_type, memory_type_2, &temp_val);
+                ret = sscanf(line, "%*s %15s %15s %*s %*s %lld \n", memory_type, memory_type_2, &temp_val);
 
                 if (ret != 3)
                     continue;
@@ -170,7 +170,10 @@ int mali_memtrack_get_memory(pid_t pid, enum memtrack_type __unused type,
                         (strcmp(memory_type_2, "Buffer") == 0)) {
                     /* Set native buffer memory read flag to true. */
                     native_buffer_read = true;
-                    native_buf_mem_size += temp_val;
+                    if ((INT64_MAX - temp_val) > native_buf_mem_size)
+                        native_buf_mem_size += temp_val;
+                    else
+                        native_buf_mem_size = INT64_MAX;
                 } else {
                     /* Ignore case. Nothing to do here. */
                     /* Continue reading file until NativeBuffer is found. */
@@ -187,14 +190,17 @@ int mali_memtrack_get_memory(pid_t pid, enum memtrack_type __unused type,
                  * Total allocated memory: 36146960
                  *
                  */
-                ret = sscanf(line, "%15s %*s %*s %d \n", memory_type, &temp_val);
+                ret = sscanf(line, "%15s %*s %*s %lld \n", memory_type, &temp_val);
 
                 if (ret != 2)
                     continue;
 
                 if (strcmp(memory_type, "Total") == 0) {
                     /* Store total memory. */
-                    total_memory_size += temp_val;
+                    if ((INT64_MAX - temp_val) > total_memory_size)
+                        total_memory_size += temp_val;
+                    else
+                        total_memory_size = INT64_MAX;
                 } else {
                     /* Ignore case. Nothing to do here. */
                 }
@@ -221,7 +227,12 @@ int mali_memtrack_get_memory(pid_t pid, enum memtrack_type __unused type,
         records[0].size_in_bytes = 0;
 
     if (allocated_records > 1)
-        records[1].size_in_bytes = total_memory_size - native_buf_mem_size;
+    {
+        if (native_buf_mem_size >= 0 && total_memory_size > native_buf_mem_size)
+            records[1].size_in_bytes = total_memory_size - native_buf_mem_size;
+        else
+            records[1].size_in_bytes = 0;
+    }
 
     return 0;
 }

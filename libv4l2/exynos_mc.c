@@ -40,12 +40,13 @@
 #include <linux/media.h>
 #include <linux/kdev_t.h>
 #include <linux/types.h>
+#include <unistd.h>
 
 #include "exynos_v4l2.h"
 
 //#define LOG_NDEBUG 0
 #define LOG_TAG "libexynosv4l2-mc"
-#include <utils/Log.h>
+#include <log/log.h>
 
 static inline unsigned int __media_entity_type(struct media_entity *entity)
 {
