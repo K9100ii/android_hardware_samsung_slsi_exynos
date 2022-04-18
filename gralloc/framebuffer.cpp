@@ -19,7 +19,7 @@
 #include <dlfcn.h>
 
 #include <cutils/ashmem.h>
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include <hardware/hardware.h>
 #include <hardware/gralloc.h>
@@ -32,7 +32,7 @@
 
 #include <utils/Vector.h>
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include <cutils/atomic.h>
 
 #if HAVE_ANDROID_OS

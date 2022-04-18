@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include "exynos_effectReverb.h"
 // from Reverb/lib
 #include "LVREV.h"

@@ -17,7 +17,7 @@
 #ifndef SEC_CAMERA_HARDWARE_METADATA_CONVERTER_H__
 #define SEC_CAMERA_HARDWARE_METADATA_CONVERTER_H__
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include <utils/RefBase.h>
 #include <hardware/camera3.h>
 #include <camera/CameraMetadata.h>

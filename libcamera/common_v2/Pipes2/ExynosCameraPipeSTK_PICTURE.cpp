@@ -17,7 +17,7 @@
 
 /* #define LOG_NDEBUG 0 */
 #define LOG_TAG "ExynosCameraPipeSTK_PICTURE"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "ExynosCameraPipeSTK_PICTURE.h"
 

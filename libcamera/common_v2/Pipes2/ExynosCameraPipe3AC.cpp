@@ -17,7 +17,7 @@
 
 /* #define LOG_NDEBUG 0 */
 #define LOG_TAG "ExynosCameraPipe3AC"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "ExynosCameraPipe3AC.h"
 

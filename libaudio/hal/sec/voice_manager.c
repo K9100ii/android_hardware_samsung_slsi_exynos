@@ -23,7 +23,7 @@
 #include <dlfcn.h>
 #include <stdlib.h>
 
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "voice_manager.h"
 #include <cutils/properties.h>

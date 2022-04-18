@@ -18,7 +18,7 @@
 #ifndef EXYNOS_CAMERA_ACTIVITY_CONTROL_H
 #define EXYNOS_CAMERA_ACTIVITY_CONTROL_H
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include <utils/threads.h>
 #include <utils/RefBase.h>
 #include <utils/String8.h>

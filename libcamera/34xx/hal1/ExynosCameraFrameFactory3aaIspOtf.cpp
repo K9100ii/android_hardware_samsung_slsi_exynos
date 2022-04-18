@@ -17,7 +17,7 @@
 
 /* #define LOG_NDEBUG 0 */
 #define LOG_TAG "ExynosCameraFrameFactory3aaIspOtf"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "ExynosCameraFrameFactory3aaIspOtf.h"
 

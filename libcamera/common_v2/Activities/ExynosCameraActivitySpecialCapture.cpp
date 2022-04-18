@@ -17,7 +17,7 @@
 
 /* #define LOG_NDEBUG 0 */
 #define LOG_TAG "ExynosCameraActivitySpecialCapture"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "ExynosCameraActivitySpecialCapture.h"
 //#include "ExynosCamera.h"

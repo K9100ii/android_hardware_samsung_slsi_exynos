@@ -17,7 +17,7 @@
 
 #ifndef EXYNOS_CAMERA_SIZE_TABLE_H
 #define EXYNOS_CAMERA_SIZE_TABLE_H
-#include <cutils/log.h>
+#include <log/log.h>
 #include <utils/String8.h>
 #include "ExynosCameraConfig.h"
 

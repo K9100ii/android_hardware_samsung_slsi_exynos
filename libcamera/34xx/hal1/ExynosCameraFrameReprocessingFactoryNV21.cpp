@@ -17,7 +17,7 @@
 
 /* #define LOG_NDEBUG 0 */
 #define LOG_TAG "ExynosCameraFrameReprocessingFactoryNV21"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "ExynosCameraFrameReprocessingFactoryNV21.h"
 

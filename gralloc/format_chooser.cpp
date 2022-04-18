@@ -17,7 +17,7 @@
  */
 #include <stdlib.h>
 #include <hardware/hardware.h>
-#include <cutils/log.h>
+#include <log/log.h>
 #include <cutils/properties.h>
 #include <hardware/gralloc.h>
 #include "format_chooser.h"

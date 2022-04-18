@@ -32,7 +32,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <system/graphics.h>
-#include <cutils/log.h>
+#include <log/log.h>
 #include "exynos_blender.h"
 
 #define BL_LOGERR(fmt, args...) \

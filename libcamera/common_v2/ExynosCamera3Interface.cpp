@@ -16,7 +16,7 @@
 
 /* #define LOG_NDEBUG 0 */
 #define LOG_TAG "ExynosCamera3Interface"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "ExynosCamera3Interface.h"
 #include "ExynosCameraAutoTimer.h"

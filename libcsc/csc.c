@@ -28,7 +28,7 @@
  *   2012.1.11 : Create
  */
 #define LOG_TAG "libcsc"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include <stdio.h>
 #include <stdlib.h>

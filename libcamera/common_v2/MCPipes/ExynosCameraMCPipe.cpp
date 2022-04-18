@@ -17,7 +17,7 @@
 
 /*#define LOG_NDEBUG 0 */
 #define LOG_TAG "ExynosCameraMCPipe"
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "ExynosCameraMCPipe.h"
 

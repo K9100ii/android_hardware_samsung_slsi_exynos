@@ -17,7 +17,7 @@
 #ifndef EXYNOS_CAMERA_REQUEST_MANAGER_H__
 #define EXYNOS_CAMERA_REQUEST_MANAGER_H__
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include <utils/RefBase.h>
 #include <hardware/camera3.h>
 #include <camera/CameraMetadata.h>

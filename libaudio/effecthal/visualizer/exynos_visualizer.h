@@ -15,7 +15,7 @@
  */
 
 #include <cutils/list.h>
-#include <cutils/log.h>
+#include <log/log.h>
 #include <system/thread_defs.h>
 
 #include <hardware/audio_effect.h>

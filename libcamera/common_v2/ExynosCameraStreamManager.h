@@ -17,7 +17,7 @@
 #ifndef EXYNOS_CAMERA_STREAM_MANAGER_H
 #define EXYNOS_CAMERA_STREAM_MANAGER_H
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

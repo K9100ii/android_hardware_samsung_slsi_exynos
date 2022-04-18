@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include "exynos_effectbundle.h"
 #include "math.h"
 

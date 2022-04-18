@@ -1,7 +1,7 @@
 #ifndef LIBMPP_H_
 #define LIBMPP_H_
 
-#include <cutils/log.h>
+#include <log/log.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <linux/videodev2.h>

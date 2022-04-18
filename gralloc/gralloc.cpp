@@ -30,7 +30,7 @@
 #include <ion/ion.h>
 #include <linux/ion.h>
 #include <exynos_ion.h>
-#include <cutils/log.h>
+#include <log/log.h>
 #include <cutils/atomic.h>
 
 #include <hardware/hardware.h>
