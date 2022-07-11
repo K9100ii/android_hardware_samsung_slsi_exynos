@@ -51,4 +51,5 @@ ifeq ($(BOARD_USES_EXYNOS5_CRC_BUFFER_ALLOC), true)
 LOCAL_CFLAGS += -DUSES_EXYNOS_CRC_BUFFER_ALLOC
 endif
 
+include $(TOP)/hardware/samsung_slsi/exynos/BoardConfigCFlags.mk
 include $(BUILD_SHARED_LIBRARY)
