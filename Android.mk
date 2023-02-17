@@ -17,7 +17,7 @@
 ifeq ($(TARGET_SLSI_VARIANT),bsp)
 
 common_exynos_dirs := \
-	libion_exynos \
+	libion \
 	libexynosutils \
 	libcec \
 	libcsc \

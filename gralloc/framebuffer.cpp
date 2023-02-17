@@ -32,7 +32,6 @@
 
 #include <utils/Vector.h>
 
-#include <log/log.h>
 #include <cutils/atomic.h>
 
 #if HAVE_ANDROID_OS
@@ -49,6 +48,7 @@
 // numbers of buffers for page flipping
 #define NUM_BUFFERS 2
 #define HWC_EXIST 0
+#define USE_BLIT_FRAMEBUFFER 0
 
 struct hwc_callback_entry
 {
@@ -65,6 +65,17 @@ struct fb_context_t {
 };
 
 /*****************************************************************************/
+#if 0
+// unused function
+static int fb_setSwapInterval(struct framebuffer_device_t* dev,
+                              int interval)
+{
+    if (interval < dev->minSwapInterval || interval > dev->maxSwapInterval)
+        return -EINVAL;
+    // FIXME: implement fb_setSwapInterval
+    return 0;
+}
+#endif
 
 static int fb_post(struct framebuffer_device_t* dev, buffer_handle_t buffer)
 {
@@ -176,7 +187,7 @@ int init_fb(struct private_module_t* module)
     module->info = info;
     module->finfo = finfo;
 
-#if !HWC_EXIST
+#if !HWC_EXIST && USE_BLIT_FRAMEBUFFER
     size_t fbSize = roundUpToPageSize(finfo.line_length * info.yres_virtual);
     module->framebuffer = new private_handle_t(dup(fd), fbSize, 0);
 
@@ -195,7 +206,7 @@ int init_fb(struct private_module_t* module)
     return 0;
 }
 
-int fb_device_open(hw_module_t const* module, const char* name __unused,
+int fb_device_open(hw_module_t const* module, const char* name,
                    hw_device_t** device)
 {
     int status = -EINVAL;
@@ -260,6 +271,8 @@ int fb_device_open(hw_module_t const* module, const char* name __unused,
     const_cast<int&>(dev->maxSwapInterval) = 1;
     *device = &dev->common;
     status = 0;
+
+	ALOGD("%s device open\n", name);
 
     return status;
 }
