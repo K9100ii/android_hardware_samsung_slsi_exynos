@@ -28,6 +28,7 @@
 #include <sys/mman.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <cutils/atomic.h>
 
 #ifdef USES_VPP
 #ifdef USES_VPP_V2
@@ -330,6 +331,7 @@ struct hwc_ctrl_t {
     int     dynamic_recomp_mode;
     int     skip_static_layer_mode;
     int     dma_bw_balance_mode;
+    int     skip_win_config;
 };
 
 #if defined(G2D_COMPOSITION) || defined(USE_GRALLOC_FLAG_FOR_HDMI)
@@ -376,6 +378,7 @@ struct exynos5_hwc_composer_device_1_t {
     pthread_t               vsync_thread;
     int                     force_gpu;
 
+    int mVirtualDisplayDevices;
     bool hdmi_hpd;
 
     int mHdmiPreset;
@@ -412,6 +415,7 @@ struct exynos5_hwc_composer_device_1_t {
     bool allowOTF;
     int setCount;
     bool debugMessages;
+    volatile int32_t updateThreadStatus;
 };
 
 void exynos5_create_update_stat_thread(struct exynos5_hwc_composer_device_1_t *dev);

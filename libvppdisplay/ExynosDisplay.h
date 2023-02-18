@@ -166,6 +166,7 @@ class ExynosDisplay {
         void dumpConfig(decon_win_config &c);
         void dumpConfig(decon_win_config &c, android::String8& result);
         void dumpContents(android::String8& result, hwc_display_contents_1_t *contents);
+        void printDebugInfos(hwc_display_contents_1_t *contents);
         int checkConfigValidation(decon_win_config *config);
 
         virtual int getDisplayConfigs(uint32_t *configs, size_t *numConfigs);
@@ -194,6 +195,7 @@ class ExynosDisplay {
         android::Vector< ExynosMPPModule* > mExternalMPPs;
         android::Vector<hwc_frect_t> mBackUpFrect;
         android::Vector<hwc_frect_t> mOriginFrect;
+        bool mHasSingleBuffer;
 
         /* For SkipStatic Layer feature */
         size_t                   mLastFbWindow;

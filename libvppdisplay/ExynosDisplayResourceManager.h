@@ -29,13 +29,13 @@ class ExynosDisplayResourceManager {
         bool mNeedsReserveFbTargetPrimary;
 
         void removeUnAssignedIntMpp(ExynosMPPVector &internalMPPs);
-        void addUnAssignedIntMpp(ExynosDisplay *display);
+        virtual void addUnAssignedIntMpp(ExynosDisplay *display);
         void addExternalMpp(hwc_display_contents_1_t** contents);
         virtual void preAssignResource();
         virtual bool preAssignIntMpp(ExynosDisplay *display, unsigned int mppType);
         void doPreProcessing(hwc_display_contents_1_t* contents, ExynosDisplay* display,
                 int *previous_drm_dma, ExynosMPPModule **previousDRMInternalMPP);
-        void handleHighPriorityLayers(hwc_display_contents_1_t* contents, ExynosDisplay* display,
+        virtual void handleHighPriorityLayers(hwc_display_contents_1_t* contents, ExynosDisplay* display,
                 int previous_drm_dma, ExynosMPPModule *previousDRMInternalMPP, bool reserveFbTarget);
         void handleLowPriorityLayers(hwc_display_contents_1_t* contents, ExynosDisplay* display);
         void printDisplyInfos(size_t type);

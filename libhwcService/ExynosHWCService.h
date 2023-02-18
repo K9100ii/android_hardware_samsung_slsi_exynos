@@ -72,6 +72,8 @@ public:
     static ExynosHWCService* getExynosHWCService();
     ~ExynosHWCService();
 
+    virtual int addVirtualDisplayDevice();
+    virtual int destroyVirtualDisplayDevice();
     virtual int setWFDMode(unsigned int mode);
     virtual int setWFDOutputResolution(unsigned int width, unsigned int height,
                                       unsigned int disp_w, unsigned int disp_h);

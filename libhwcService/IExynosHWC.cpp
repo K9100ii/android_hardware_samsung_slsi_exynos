@@ -29,7 +29,9 @@
 namespace android {
 
 enum {
-    SET_WFD_MODE = 0,
+    ADD_VIRTUAL_DISPLAY_DEVICE = 0,
+    DESTROY_VIRTUAL_DISPLAY_DEVICE,
+    SET_WFD_MODE,
     SET_WFD_OUTPUT_RESOLUTION,
     SET_VDS_GLES_FORMAT,
     SET_EXT_FB_MODE,
@@ -83,6 +85,24 @@ public:
     BpExynosHWCService(const sp<IBinder>& impl)
         : BpInterface<IExynosHWCService>(impl)
     {
+    }
+
+    virtual int addVirtualDisplayDevice()
+    {
+        Parcel data, reply;
+        data.writeInterfaceToken(IExynosHWCService::getInterfaceDescriptor());
+        int result = remote()->transact(ADD_VIRTUAL_DISPLAY_DEVICE, data, &reply);
+        result = reply.readInt32();
+        return result;
+    }
+
+    virtual int destroyVirtualDisplayDevice()
+    {
+        Parcel data, reply;
+        data.writeInterfaceToken(IExynosHWCService::getInterfaceDescriptor());
+        int result = remote()->transact(DESTROY_VIRTUAL_DISPLAY_DEVICE, data, &reply);
+        result = reply.readInt32();
+        return result;
     }
 
     virtual int setWFDMode(unsigned int mode)
@@ -406,6 +426,18 @@ status_t BnExynosHWCService::onTransact(
     uint32_t code, const Parcel& data, Parcel* reply, uint32_t flags)
 {
     switch(code) {
+        case ADD_VIRTUAL_DISPLAY_DEVICE: {
+            CHECK_INTERFACE(IExynosHWCService, data, reply);
+            int res = addVirtualDisplayDevice();
+            reply->writeInt32(res);
+            return NO_ERROR;
+        } break;
+        case DESTROY_VIRTUAL_DISPLAY_DEVICE: {
+            CHECK_INTERFACE(IExynosHWCService, data, reply);
+            int res = destroyVirtualDisplayDevice();
+            reply->writeInt32(res);
+            return NO_ERROR;
+        } break;
         case SET_WFD_MODE: {
             CHECK_INTERFACE(IExynosHWCService, data, reply);
             int mode = data.readInt32();

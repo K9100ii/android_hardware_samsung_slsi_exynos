@@ -441,8 +441,8 @@ int exynos5_query(struct hwc_composer_device_1* dev, int what, int *value)
 
     switch (what) {
     case HWC_BACKGROUND_LAYER_SUPPORTED:
-        // we do not support the background layer
-        value[0] = 0;
+        // we support the background layer
+        value[0] = 1;
         break;
     case HWC_VSYNC_PERIOD:
         // vsync period in nanosecond
@@ -588,6 +588,7 @@ void *hwc_update_stat_thread(void *data)
     struct exynos5_hwc_composer_device_1_t *pdev =
             (struct exynos5_hwc_composer_device_1_t *)data;
     int event_cnt = 0;
+    android_atomic_inc(&(pdev->updateThreadStatus));
 
     while (pdev->update_stat_thread_flag) {
         event_cnt = pdev->update_event_cnt;
@@ -605,6 +606,7 @@ void *hwc_update_stat_thread(void *data)
             }
         }
     }
+    android_atomic_dec(&(pdev->updateThreadStatus));
     return NULL;
 }
 
@@ -626,11 +628,7 @@ void *hwc_vsync_thread(void *data)
     char uevent_desc[4096];
     memset(uevent_desc, 0, sizeof(uevent_desc));
 
-    struct sched_param sched_param = {0};
-    sched_param.sched_priority = 5;
-    if (sched_setscheduler(gettid(), SCHED_FIFO, &sched_param) != 0) {
-        ALOGE("Couldn't set SCHED_FIFO for hwc_vsync");
-    }
+    setpriority(PRIO_PROCESS, 0, HAL_PRIORITY_URGENT_DISPLAY);
 
     uevent_init();
 
@@ -738,13 +736,12 @@ int exynos5_blank(struct hwc_composer_device_1 *dev, int disp, int blank)
 #endif
         pdev->primaryDisplay->mBlanked = !!blank;
 
-        /* Check if the thread is enabled before calling pthread_kill as we will seg fault otherwise */
-        if(pdev->update_stat_thread_flag == true) {
-            if (pthread_kill(pdev->update_stat_thread, 0) != ESRCH) { //check if the thread is alive
-               if (fb_blank == FB_BLANK_POWERDOWN) {
-                    pdev->update_stat_thread_flag = false;
-                    pthread_join(pdev->update_stat_thread, 0);
-                }
+        android_atomic_acquire_load(&pdev->updateThreadStatus);
+
+        if(pdev->updateThreadStatus != 0) {
+            if (fb_blank == FB_BLANK_POWERDOWN) {
+                pdev->update_stat_thread_flag = false;
+                pthread_join(pdev->update_stat_thread, 0);
             }
         } else { // thread is not alive
             if (fb_blank == FB_BLANK_UNBLANK && pdev->hwc_ctrl.dynamic_recomp_mode == true)
@@ -1048,7 +1045,7 @@ int exynos_setActiveConfig(struct hwc_composer_device_1* dev, int disp, int inde
     return -1;
 }
 
-int exynos_setCursorPositionAsync(struct hwc_composer_device_1 *dev __unused, int disp __unused, int x_pos __unused, int y_pos __unused)
+int exynos_setCursorPositionAsync(struct hwc_composer_device_1 __unused *dev, int __unused disp, int __unused x_pos, int __unused y_pos)
 {
     return 0;
 }
@@ -1076,15 +1073,15 @@ int exynos_setPowerMode(struct hwc_composer_device_1* dev, int disp, int mode)
     case HWC_DISPLAY_PRIMARY: {
 #ifdef USES_VPP
         if ((mode == HWC_POWER_MODE_DOZE) || (mode == HWC_POWER_MODE_DOZE_SUSPEND)) {
-            if (pdev->primaryDisplay->mBlanked == 1) {
-                fb_blank = FB_BLANK_UNBLANK;
+            if (pdev->primaryDisplay->mBlanked == 0) {
+                fb_blank = FB_BLANK_POWERDOWN;
                 int err = ioctl(pdev->primaryDisplay->mDisplayFd, FBIOBLANK, fb_blank);
                 if (err < 0) {
                     ALOGE("blank ioctl failed: %s, mode(%d)", strerror(errno), mode);
                     return -errno;
                 }
             }
-            pdev->primaryDisplay->mBlanked = 0;
+            pdev->primaryDisplay->mBlanked = 1;
             return pdev->primaryDisplay->setPowerMode(mode);
         }
 #endif
@@ -1117,14 +1114,10 @@ int exynos_setPowerMode(struct hwc_composer_device_1* dev, int disp, int mode)
         }
 #endif
         pdev->primaryDisplay->mBlanked = !!blank;
-
-        /* Check if the thread is enabled before calling pthread_kill as we will seg fault otherwise */
-        if(pdev->update_stat_thread_flag == true) {
-            if (pthread_kill(pdev->update_stat_thread, 0) != ESRCH) { //check if the thread is alive
-               if (fb_blank == FB_BLANK_POWERDOWN) {
-                    pdev->update_stat_thread_flag = false;
-                    pthread_join(pdev->update_stat_thread, 0);
-                }
+        if (android_atomic_acquire_load(&pdev->updateThreadStatus) != 0) {
+            if (fb_blank == FB_BLANK_POWERDOWN) {
+                pdev->update_stat_thread_flag = false;
+                pthread_join(pdev->update_stat_thread, 0);
             }
         } else { // thread is not alive
             if (fb_blank == FB_BLANK_UNBLANK && pdev->hwc_ctrl.dynamic_recomp_mode == true)
@@ -1497,14 +1490,21 @@ int exynos5_open(const struct hw_module_t *module, const char *name,
 
     dev->hwc_ctrl.max_num_ovly = NUM_HW_WINDOWS;
     dev->hwc_ctrl.num_of_video_ovly = 2;
+#if (defined(USES_EXYNOS7570) || defined(USES_EXYNOS7870))
+    dev->hwc_ctrl.dynamic_recomp_mode = true;
+#else
     dev->hwc_ctrl.dynamic_recomp_mode = (dev->psrMode == PSR_NONE);
+#endif
     dev->hwc_ctrl.skip_static_layer_mode = true;
     dev->hwc_ctrl.dma_bw_balance_mode = true;
+    dev->hwc_ctrl.skip_win_config = false;
 
     hwcDebug = 0;
 
     if (dev->hwc_ctrl.dynamic_recomp_mode == true)
         exynos5_create_update_stat_thread(dev);
+
+    dev->mVirtualDisplayDevices = 0;
 
     return 0;
 
@@ -1535,7 +1535,7 @@ int exynos5_close(hw_device_t *device)
             (struct exynos5_hwc_composer_device_1_t *)device;
     pthread_kill(dev->vsync_thread, SIGTERM);
     pthread_join(dev->vsync_thread, NULL);
-    if (pthread_kill(dev->update_stat_thread, 0) != ESRCH) {
+    if (android_atomic_acquire_load(&dev->updateThreadStatus) != 0) {
         pthread_kill(dev->update_stat_thread, SIGTERM);
         pthread_join(dev->update_stat_thread, NULL);
     }

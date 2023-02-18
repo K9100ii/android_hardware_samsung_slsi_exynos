@@ -28,7 +28,7 @@ include $(CLEAR_VARS)
 LOCAL_PRELINK_MODULE := false
 LOCAL_MODULE_RELATIVE_PATH := hw
 LOCAL_SHARED_LIBRARIES := liblog libion libcutils libEGL libGLESv1_CM libhardware \
-	libhardware_legacy libutils libsync \
+	libhardware_legacy libcutils libutils libsync \
 	libexynosv4l2 libexynosutils libhwcutils libexynosdisplay libhdmi \
 	libmpp libbase
 #libMcClient
